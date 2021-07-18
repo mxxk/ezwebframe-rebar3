@@ -14,7 +14,7 @@ loop(L) ->
 	    case lists:keysearch(Who,1,L) of
 		false ->
 		    L1 = L ++ [{Who,Pid}],
-		    Pid ! {irc, welcome, Who},            
+		    Pid ! {irc, welcome, Who},
 		    Msg = [Who, <<" joined the chat<br>">>],
 		    broadcast(L1, scroll, list_to_binary(Msg)),
 		    broadcast(L1, groups, list_users(L1)),
@@ -35,7 +35,7 @@ loop(L) ->
 		    loop(L1)
 	    end;
 	{broadcast, Who, Txt} ->
-	    broadcast(L, scroll, 
+	    broadcast(L, scroll,
 		      list_to_binary([" > ", Who, " >> ", Txt, "<br>"])),
 	    loop(L);
 	X ->

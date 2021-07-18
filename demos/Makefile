@@ -8,7 +8,7 @@ all: beam
 	    -pa ./ebin\
             -s ezwebframe_demos start
 
-beam: 
+beam:
 	erlc -o ebin *.erl */*.erl
 
 clean:

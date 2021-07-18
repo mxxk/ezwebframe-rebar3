@@ -4,7 +4,7 @@
  * x.mk_canvas({width:200, id:1, ht:100, color:blue});
  * x.mk_circle({parent:1, cx:10, cy:20, r:15, color:"green"});
  * x.render([cmd]) interprets a list of commands
- *  
+ *
  */
 
 var SVG = {};
@@ -25,7 +25,7 @@ SVG.init1 = function(o){
     // console.log('***** INIT ***** ', [SVG,o.indiv]);
     var canvas = SVG.add_canvas(o);
 }
-    
+
 SVG.id = function(tag) {
     return document.getElementById(tag);
 };
@@ -48,7 +48,7 @@ SVG.add_canvas = function(o) {
     var canvas = document.createElementNS(SVG.svg_ns, 'svg');
     canvas.setAttribute("width", SVG.D(o.width, 200));
     canvas.setAttribute("height", SVG.D(o.ht, 100));
-    canvas.setAttribute("style","background-color:" + 
+    canvas.setAttribute("style","background-color:" +
 			SVG.D(o.color, "#eeffbb"));
     canvas.setAttribute("id", o.id);
     canvas.addEventListener("mousemove", SVG.mouse_move, false);
@@ -71,7 +71,7 @@ SVG.add_arc = function(o)
     var startangle = o.startangle*Math.PI/180;
     var angle = o.angle*Math.PI/180;
     var endangle = startangle + angle;
-    
+
     // Compute the two points where our wedge intersects the circle
     // These formulas are chosen so that an angle of 0 is at 12 o'clock
     // and positive angles increase clockwise.
@@ -79,18 +79,18 @@ SVG.add_arc = function(o)
     var y1 = o.cy - o.r * Math.cos(startangle);
     var x2 = o.cx + o.r * Math.sin(endangle);
     var y2 = o.cy - o.r * Math.cos(endangle);
-    
+
     // This is a flag for angles larger than than a half circle
     var big = 0;
     if (endangle - startangle > Math.PI) big = 1;
-    
+
     var d = "M " + o.cx + "," + o.cy +  // Start at circle center
     " L " + x1 + "," + y1 +             // Draw line to (x1,y1)
     " A " + o.r + "," + o.r +           // Draw an arc of radius r
     " 0 " + big + " 1 " +               // Arc details...
     x2 + "," + y2 +                     // Arc goes to to (x2,y2)
     " Z";                               // Close path back to (cx,cy)
-    path.setAttribute("d", d);          // Set this path 
+    path.setAttribute("d", d);          // Set this path
     path.setAttribute("fill", SVG.D(o.fill, "blue")); // Set wedge color
     path.setAttribute("stroke", "black");   // Outline wedge in black
     path.setAttribute("stroke-width", "2"); // 2 units thick
@@ -101,13 +101,13 @@ SVG.add_arc = function(o)
 SVG.add_bezier = function(o)
 {
     var path = document.createElementNS(SVG.svg_ns, "path");
-    path.setAttribute("d", o.path);                         // Set this path 
+    path.setAttribute("d", o.path);                         // Set this path
     path.setAttribute("fill", SVG.D(o.fill, "blue"));       // Set wedge color
     path.setAttribute("stroke", "black");                   // Outline in black
     path.setAttribute("stroke-width", SVG.D(o.width, "2")); // 2 units thick
     V[o.parent].appendChild(path);
     SVG.save(o.id, path);
-};  
+};
 
 SVG.add_path = function(o)
 {
@@ -115,12 +115,12 @@ SVG.add_path = function(o)
     group.setAttribute('transform', o.transform);
     V[o.parent].appendChild(group);
     var path = document.createElementNS(SVG.svg_ns, "path");
-    path.setAttribute("d", o.d);                      // Set this path 
+    path.setAttribute("d", o.d);                      // Set this path
     path.setAttribute("fill", SVG.D(o.fill, "blue")); // Set wedge color
     path.setAttribute("stroke", "black");             // Outline wedge in black
     path.setAttribute("stroke-width", SVG.D(o.width, "2")); // 2 units thick
     group.appendChild(path);
-};  
+};
 
 SVG.add_circle = function(o)
 {
@@ -168,7 +168,7 @@ SVG.add_group = function(o)
 
 SVG.add_image = function(o)
 {
-    var img = document.createElementNS(SVG.svg_ns, "image");  
+    var img = document.createElementNS(SVG.svg_ns, "image");
     img.setAttribute("x", SVG.D(o.x,0));
     img.setAttribute("y", SVG.D(o.y,0));
     img.setAttribute("width", SVG.D(o.width, 20));
@@ -196,7 +196,7 @@ SVG.add_line = function(o)
     V[o.parent].appendChild(obj);
     SVG.save(o.id, obj);
 };
- 
+
 SVG.add_rect = function(o)
 {
     var obj = document.createElementNS(SVG.svg_ns, 'rect');
@@ -211,15 +211,15 @@ SVG.add_rect = function(o)
     obj.setAttribute("rx", SVG.D(o.rx, 3));
     obj.setAttribute("ry", SVG.D(o.ry, 3));
     obj.setAttribute("id", o.id);
-    if(o.dash != undefined) 
+    if(o.dash != undefined)
 	obj.setAttribute("style", "stroke-dasharray: "+ o.dash);
     V[o.parent].appendChild(obj);
     SVG.save(o.id,obj);
-    
+
     return obj;
 };
 
-SVG.add_text = function(o) 
+SVG.add_text = function(o)
 {
     var text = document.createElementNS(SVG.svg_ns, "text");
     text.setAttribute("fill", SVG.D(o.fill,"black"));
@@ -256,10 +256,10 @@ SVG.mouse_up = function(evt)
 	}
     }
 };
-    
+
 SVG.mouse_move = function(evt)
-{ 
-    if (SVG.dragging) 
+{
+    if (SVG.dragging)
 	{
 	    var t = evt.target;
 	    var x = evt.clientX + window.scrollX;
@@ -268,12 +268,12 @@ SVG.mouse_move = function(evt)
 	    var x1 = (x-SVG.xstart);
 	    var y1 = (y-SVG.ystart);
 	    if (SVG.dragobj.constrain == "h"){
-		// if we want to constrain the dragging we 
+		// if we want to constrain the dragging we
 		// freeze y1
 		y1 = SVG.dragobj.getAttribute("y");
 	    };
 	    if (SVG.dragobj.constrain == "v"){
-		// if we want to constrain the dragging we 
+		// if we want to constrain the dragging we
 		// freeze y1
 		x1 = SVG.dragobj.getAttribute("x");
 	    };
@@ -281,10 +281,10 @@ SVG.mouse_move = function(evt)
 	    SVG.dragobj.setAttribute("y", y1);
 	    var t = "translate("+x1+","+y1+")";
 	    SVG.dragobj.setAttribute('transform', t);
-	    SVG.update_draggables(SVG.dragobj);	    
+	    SVG.update_draggables(SVG.dragobj);
 	}
 };
-   
+
 SVG.update_draggables = function(x){
     // console.log('update_draggables', [x.elastic, x.id]);
     var lines= x.elastic;
@@ -374,7 +374,7 @@ SVG.add_elastic_arrow = function(o){
     SVG.save(newId, {id1:o.id1, id2:o.id2, r1:r1, r2:r2, obj:V[o.id]});
     g1.elastic.push(newId);
     g2.elastic.push(newId);
-}    
+}
 
 SVG.endpoints = function(x1,y1,r1,x2,y2,r2)
 {
@@ -390,7 +390,7 @@ SVG.endpoints = function(x1,y1,r1,x2,y2,r2)
     a = (y2 - b)/d;
     y3 = (r1)*a + b;
     y4 = (d-r2-m)*a + b;
-    return {x1:x3, y1:y3, x2:x4, y2:y4} 
+    return {x1:x3, y1:y3, x2:x4, y2:y4}
 }
 
 SVG.add_drag_rect = function(o){
@@ -402,7 +402,7 @@ SVG.add_drag_rect = function(o){
     SVG.add_rect({parent:o.id, x:0,y:0,width:o.width,color:'pink',
 		  ht:o.ht, rx:2,ry:2});
 };
-    
+
 
 
 SVG.add_dragblob = function(o)
@@ -415,9 +415,9 @@ SVG.add_dragblob = function(o)
     g1.elastic = new Array();
     SVG.add_circle({parent:o.id, x:0,y:0,r:o.r,stroke:2});
 };
-    
 
-/* 
+
+/*
  * Now for some objects that are built using SVG
  * Button
  *
@@ -437,12 +437,12 @@ SVG.Button = function(o)
     this.width = o.width;
     this.rect = SVG.add_rect({parent:o.id,
 			      id:o.id+'r',
-			      x:0, y:0, str:o.str, stroke:"black", 
+			      x:0, y:0, str:o.str, stroke:"black",
 			      rx:1, ry:1, width:o.width, ht:25, thickness:1,
 			      color:"#dddddd"});
     this.text = SVG.add_text({parent:o.id,
 			      id:o.id+'t',
-			      x:(o.width/2),y:18, str:o.str, 
+			      x:(o.width/2),y:18, str:o.str,
 			      anchor:"middle"});
 };
 

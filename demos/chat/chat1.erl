@@ -7,7 +7,7 @@ start(Browser) ->
 running(Browser, L) ->
     receive
 	{Browser, {struct, [{join,Who}]}} ->
-	    Browser ! [{cmd,append_div},{id,scroll}, 
+	    Browser ! [{cmd,append_div},{id,scroll},
 		       {txt, list_to_binary([Who, " joined the group\n"])}],
 	    L1 = [Who,"<br>"|L],
 	    Browser ! [{cmd,fill_div}, {id,users},
@@ -21,5 +21,3 @@ running(Browser, L) ->
 	    io:format("chat received:~p~n",[X])
     end,
     running(Browser, L).
-
-

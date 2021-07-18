@@ -14,7 +14,7 @@ SVG.dragobj = null;
 SVG.canvas = null;
 
 
-// a component has 
+// a component has
 //  C.name = unique Id
 //  C.template = name of the template
 //  C.x x coord
@@ -23,20 +23,20 @@ SVG.canvas = null;
 
 var Component = {};
 
-Component.erik =  
-    {template:'person', x:300, y:50,  attributes:{guid:"p1", date:"1987-09-24", 
+Component.erik =
+    {template:'person', x:300, y:50,  attributes:{guid:"p1", date:"1987-09-24",
 							       who:"erik"}};
 
-Component.joe = 
-    {template:'person', x:120, y:250, attributes:{guid:'joe124', 
+Component.joe =
+    {template:'person', x:120, y:250, attributes:{guid:'joe124',
 						  who:"joe", date:"2012-08-12"}};
 
-Component.kenneth = 
+Component.kenneth =
     {template:'person', x:500, y:250, attributes:{guid:'abc123',
 						  date:"2005-04-23",
 						  who:"kenneth"}};
 
-Component.jim = 
+Component.jim =
     {template:'person', x:120, y:450, attributes:{guid:'12abc123',
 						  date:"2007-04-23",
 						  who:"Jim"}};
@@ -45,8 +45,8 @@ Component.jim =
     // {name:2, template:'one', x:300,y:145,txt:"Component number1"},
     // {name:3, template:'one', x:500,y:45, txt:"Component number3"}
 
-		  
-var Wires = 
+
+var Wires =
     [
 	{index:'l11', fromId:'erik', fromcon:'bot', toId: 'joe', tocon: 'top'},
 	{index:'l12', fromId:'erik', fromcon:'bot', toId: 'kenneth', tocon: 'top'},
@@ -86,7 +86,7 @@ SVG.ystart = 0;
 SVG.dragging = false;
 SVG.dragobj = null;
 SVG.canvas = null;
-    
+
 SVG.id = function(tag) {
     return document.getElementById(tag);
 };
@@ -109,7 +109,7 @@ SVG.add_canvas = function(o) {
     var canvas = document.createElementNS(SVG.svg_ns, 'svg');
     canvas.setAttribute("width", SVG.D(o.width, 200));
     canvas.setAttribute("height", SVG.D(o.ht, 100));
-    canvas.setAttribute("style","background-color:" + 
+    canvas.setAttribute("style","background-color:" +
 			SVG.D(o.color, "#eeffbb"));
     canvas.setAttribute("id", o.id);
     canvas.addEventListener("mousemove", SVG.mouse_move, false);
@@ -160,7 +160,7 @@ function show_controls(){
 	// console.log("input",opt);
 	$("#select").append(opt);
     };
-    
+
 }
 
 function do_update(){
@@ -181,11 +181,11 @@ function do_update(){
 	var val = children.eq(1).val();
 	x[key] = val;
 	desc[key].id = objId + "." + key;
-	console.log('update key,val', [key,val,desc[key]]);	
+	console.log('update key,val', [key,val,desc[key]]);
 	configure_attribute(key, val, desc[key]);
     });
     console.log('x', x);
-    
+
 }
 
 function show_selected(){
@@ -314,7 +314,7 @@ function render_component(name, o){
 			type:'circle',
 			fill:'red',
 			cx:e.x,cy:e.y,r:Csize,
-			
+
 		       });
     };
 }
@@ -324,7 +324,7 @@ function configure_attributes(o){
     var template = Template[o.template];
     // console.log('template=',template);
     for(var key in o.attributes){
-	configure_attribute(key, 
+	configure_attribute(key,
 			    o.attributes[key],
 			    template.attributes[key]
 			   );
@@ -373,7 +373,7 @@ function render_attribute(parent, name, o){
     }
 }
 
-SVG.add_text = function(o) 
+SVG.add_text = function(o)
 {
     var text = document.createElementNS(SVG.svg_ns, "text");
     text.setAttribute("fill", SVG.D(o.fill,"black"));
@@ -409,7 +409,7 @@ SVG.endpoints = function(x1,y1,r1,x2,y2,r2)
     a = (y2 - b)/d;
     y3 = (r1)*a + b;
     y4 = (d-r2-m)*a + b;
-    return {x1:x3, y1:y3, x2:x4, y2:y4} 
+    return {x1:x3, y1:y3, x2:x4, y2:y4}
 }
 
 SVG.mouse_up = function(evt)
@@ -429,10 +429,10 @@ SVG.mouse_up = function(evt)
 	}
     }
 };
-    
+
 SVG.mouse_move = function(evt)
-{ 
-    if (SVG.dragging) 
+{
+    if (SVG.dragging)
 	{
 	    var t = evt.target;
 	    var x = evt.clientX + window.scrollX;
@@ -441,12 +441,12 @@ SVG.mouse_move = function(evt)
 	    var x1 = (x-SVG.xstart);
 	    var y1 = (y-SVG.ystart);
 	    if (SVG.dragobj.constrain == "h"){
-		// if we want to constrain the dragging we 
+		// if we want to constrain the dragging we
 		// freeze y1
 		y1 = SVG.dragobj.getAttribute("y");
 	    };
 	    if (SVG.dragobj.constrain == "v"){
-		// if we want to constrain the dragging we 
+		// if we want to constrain the dragging we
 		// freeze y1
 		x1 = SVG.dragobj.getAttribute("x");
 	    };
@@ -454,7 +454,7 @@ SVG.mouse_move = function(evt)
 	    SVG.dragobj.setAttribute("y", y1);
 	    var t = "translate("+x1+","+y1+")";
 	    SVG.dragobj.setAttribute('transform', t);
-	    SVG.update_draggables();	    
+	    SVG.update_draggables();
 	}
 };
 
@@ -499,7 +499,7 @@ SVG.mouse_down = function(evt)
 
 <p>need to have absolute tree like name for all rendered attributes.</p>
 
- 
+
 <table>
   <tr>
     <td><div id="here"></div></td>
@@ -508,11 +508,9 @@ SVG.mouse_down = function(evt)
     <select id="select">
     </select>
     <div id="edit"></div>
-    <button id="update">update</button>   
+    <button id="update">update</button>
     </div>
  </td>
-   
+
   </tr>
 </table>
-
-  

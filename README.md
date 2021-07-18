@@ -42,6 +42,3 @@ To run the demos
 <pre>
    $ make
 </pre>
-
-
-   

@@ -33,14 +33,12 @@ running(Browser, Who) ->
 	    Browser ! [{cmd,show_div},{id,idle}],
 	    idle(Browser);
 	{irc, scroll, Bin} ->
-	    Browser ! [{cmd,append_div},{id,scroll}, {txt, Bin}],	    
+	    Browser ! [{cmd,append_div},{id,scroll}, {txt, Bin}],
 	    running(Browser, Who);
 	{irc, groups, Bin} ->
-	    Browser ! [{cmd,fill_div},{id,users}, {txt, Bin}],	    
+	    Browser ! [{cmd,fill_div},{id,users}, {txt, Bin}],
 	    running(Browser, Who);
 	X ->
 	    io:format("chat running received:~p~n",[X]),
 	    running(Browser, Who)
     end.
-
-

@@ -3,7 +3,7 @@
 
 %%START:shell1
 start(Browser) ->
-    Browser ! [{cmd,append_div}, {id, scroll}, 
+    Browser ! [{cmd,append_div}, {id, scroll},
 	       {txt, <<"Starting Erlang shell:<br>">>}],
     B0 = erl_eval:new_bindings(),
     IO = grab_io(),
@@ -30,7 +30,7 @@ string2value(Str, Bindings0) ->
     case erl_scan:string(Str, 0) of
         {ok, Tokens, _} ->
             case erl_parse:parse_exprs(Tokens) of
-                {ok, Exprs} -> 
+                {ok, Exprs} ->
                     {value, Value, Bindings1} = erl_eval:exprs(Exprs, Bindings0),
                     {Value, Bindings1};
                 Other ->
@@ -101,5 +101,3 @@ output(P, Cs) ->
 
 io_reply(From, ReplyAs, Reply) ->
     From ! {io_reply,ReplyAs,Reply}.
-
-

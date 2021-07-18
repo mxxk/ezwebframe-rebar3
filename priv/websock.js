@@ -12,38 +12,38 @@ function onClose(evt) {
     // console.log('closed');
     document.body.style.backgroundColor='#ffb2b2';
     alert("Socket closed - your erlang probably crashed");
-}  
-  
+}
+
 function onMessage(evt) {
     var json = JSON.parse(evt.data);
     do_cmds(json);
 }
-  
-function onError(evt) { 
-    // if we get an error change the color of the display so we 
+
+function onError(evt) {
+    // if we get an error change the color of the display so we
     // can see we got an error
     document.body.style.backgroundColor='orange';
-}  
-  
+}
+
 function send(msg) {
     websocket.send(msg);
 }
-  
+
 function start_session(wsUri){
     // console.log('start_session', wsUri);
-    websocket           = new WebSocket(wsUri); 
+    websocket           = new WebSocket(wsUri);
     websocket.onopen    = onOpen;
     websocket.onclose   = onClose;
-    websocket.onmessage = onMessage; 
+    websocket.onmessage = onMessage;
     websocket.onerror   = onError;
     return(false);
-}  
-    
-function onOpen(evt) { 
+}
+
+function onOpen(evt) {
     // console.log("connected");
 }
 
-// START:do 
+// START:do
 function do_cmds(objs){
     // console.log('do_cmds', objs);
     for(var i = 0; i < objs.length; i++){
@@ -89,16 +89,16 @@ function make_live_inputs(){
 			    read_entry(e, id);
 			};
 		    });
-	    
+
 	});
 }
-	
+
 function read_entry(x, id){
     var val = x.val();
     x.val(" ");
     send_json({'entry':id, txt:val});
 }
-    
+
 // browser commands
 
 function append_div(o){
@@ -110,4 +110,3 @@ function append_div(o){
 function fill_div(o){
     $('#'+o.id).html(o.txt);
 }
-

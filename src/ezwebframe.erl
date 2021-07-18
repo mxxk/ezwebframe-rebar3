@@ -1,8 +1,8 @@
 -module(ezwebframe).
 
 -export([start_link/2,
-	 init/2,      
-	 websocket_handle/3, 
+	 init/2,
+	 websocket_handle/3,
 	 terminate/3, websocket_terminate/3,
 	 websocket_info/3,
 	 append_div/3,
@@ -19,17 +19,17 @@
 start_link(Dispatch, Port) ->
     io:format("Starting:~p~n",[file:get_cwd()]),
     ok = application:start(crypto),
-    ok = application:start(ranch), 
-    ok = application:start(cowlib), 
+    ok = application:start(ranch),
+    ok = application:start(cowlib),
     ok = application:start(cowboy),
     ok = web_server_start(Port, Dispatch).
 
 web_server_start(Port, Dispatcher) ->
     E0 = #env{dispatch=Dispatcher},
-    Dispatch = cowboy_router:compile([{'_',[{'_', ?MODULE, E0}]}]),  
+    Dispatch = cowboy_router:compile([{'_',[{'_', ?MODULE, E0}]}]),
     %% server is the name of this module
     NumberOfAcceptors = 100,
-    Status = 
+    Status =
 	cowboy:start_http(ezwebframe,
 			  NumberOfAcceptors,
 			  [{port, Port}],
@@ -43,7 +43,7 @@ web_server_start(Port, Dispatcher) ->
 	    io:format("websockets started on port:~p~n",[Port])
     end.
 
-init(Req, E0) ->   
+init(Req, E0) ->
     %% io:format("init:~n"),
     Resource = path(Req),
     %% io:format("Resource:~p~n",[Resource]),
@@ -86,7 +86,7 @@ serve_file(File, Req, Env) ->
 
 serve_abs_file(File, Req, Env) ->
     Val = file:read_file(File),
-    case Val of 
+    case Val of
 	{error, _} ->
 	    io:format("*** no page called ~p~n",[File]),
 	    reply_html(pre({no_page_called,File}), Req, Env);
@@ -183,14 +183,14 @@ atomize(X) ->
 
 append_div(Ws, Div, X) ->
     Bin = list_to_binary(X),
-    send_websocket(Ws, 
+    send_websocket(Ws,
 		   [{cmd,append_div},{id,Div},{txt,Bin}]).
 
 fill_div(Ws, Div, X) ->
     Bin = list_to_binary(X),
-    send_websocket(Ws, 
+    send_websocket(Ws,
 		   [{cmd,fill_div},{id,Div},{txt,Bin}]).
-    
+
 send_websocket(Ws, X) ->
     Ws ! {send, list_to_binary(encode([{struct,X}]))}.
 
@@ -220,7 +220,7 @@ mime_type(svg)     -> "image/svg+xml".
 pre(X) ->
     ["<pre>\n",quote(lists:flatten(io_lib:format("~p",[X]))), "</pre>"].
 
-%% quote HTML characters "<" and "&" 
+%% quote HTML characters "<" and "&"
 
 quote("<" ++ T) -> "&lt;" ++ quote(T);
 quote("&" ++ T) -> "&amp;" ++ quote(T);

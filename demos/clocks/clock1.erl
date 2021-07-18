@@ -27,4 +27,3 @@ current_time() ->
     {Hour,Min,Sec} = time(),
     list_to_binary(io_lib:format("~2.2.0w:~2.2.0w:~2.2.0w",
 				 [Hour,Min,Sec])).
-

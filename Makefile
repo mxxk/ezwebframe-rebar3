@@ -1,4 +1,4 @@
 all:
-	@test -d deps || rebar get-deps	
+	@test -d deps || rebar get-deps
 	rebar compile
 	cd demos; make
