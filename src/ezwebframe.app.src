@@ -1,6 +1,6 @@
 {application, ezwebframe,
  [
-  {description, ""},
+  {description, "ezwebframe"},
   {vsn, "1"},
   {registered, []},
   {applications, [
