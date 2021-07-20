@@ -18,10 +18,10 @@ dispatch(F) ->
     F1.
 
 dispatch1("/ezwebframe/" ++ F) ->
-    Dir = dir(2, code:which(ezwebframe)) ++ "/priv/",
+    Dir = dir(2, code:which(ezwebframe)) ++ "/priv/ezwebframe/",
     Dir ++ F;
 dispatch1("/" ++ F) ->
-    Dir = dir(2,code:which(?MODULE)) ++ "/",
+    Dir = dir(2, code:which(?MODULE)) ++ "/priv/ezwebframe_demos/",
     Dir ++ F.
 
 dir(0, F) -> F;
