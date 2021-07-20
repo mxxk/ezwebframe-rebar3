@@ -1,10 +1,10 @@
 -module(ezwebframe).
 
 -export([start_link/2,
-	 init/2,
-	 websocket_handle/3,
-	 terminate/3, websocket_terminate/3,
-	 websocket_info/3,
+	 init/2, websocket_init/1,
+	 websocket_handle/2,
+	 terminate/3,
+	 websocket_info/2,
 	 append_div/3,
 	 pre/1,
 	 fill_div/3
@@ -18,22 +18,17 @@
 
 start_link(Dispatch, Port) ->
     io:format("Starting:~p~n",[file:get_cwd()]),
-    ok = application:start(crypto),
-    ok = application:start(ranch),
-    ok = application:start(cowlib),
-    ok = application:start(cowboy),
+    {ok, _} = application:ensure_all_started(cowboy),
     ok = web_server_start(Port, Dispatch).
 
 web_server_start(Port, Dispatcher) ->
     E0 = #env{dispatch=Dispatcher},
     Dispatch = cowboy_router:compile([{'_',[{'_', ?MODULE, E0}]}]),
     %% server is the name of this module
-    NumberOfAcceptors = 100,
     Status =
-	cowboy:start_http(ezwebframe,
-			  NumberOfAcceptors,
-			  [{port, Port}],
-			  [{env, [{dispatch, Dispatch}]}]),
+	cowboy:start_clear(ezwebframe,
+			   [{port, Port}],
+			   #{env => #{dispatch => Dispatch}}),
     case Status of
 	{error, _} ->
 	    io:format("websockets could not be started -- "
@@ -49,14 +44,10 @@ init(Req, E0) ->
     %% io:format("Resource:~p~n",[Resource]),
     case Resource of
 	["/", "websocket",ModStr] ->
-	    Self = self(),
-	    Mod = list_to_atom(ModStr),
-	    %% Spawn an erlang handler
 	    %% The return value will cause cowboy
 	    %% to call this module at the entry point
-	    %% websocket_handle
-	    Pid = spawn_link(Mod, start, [Self]),
-	    {cowboy_websocket, Req, Pid};
+	    %% websocket_init
+	    {cowboy_websocket, Req, ModStr};
 	_ ->
 	    handle(Req, E0)
     end.
@@ -69,7 +60,7 @@ handle(Req, Env) ->
     io:format("mapped to:~p~n",[Res1]),
     case Resource of
 	"/" ->
-	    serve_file("index.html", Req, Env);
+	    serve_file(Res1 ++ "index.html", Req, Env);
 	"/files" ->
 	    list_dir(F("/"), Req, Env);
 	_ ->
@@ -115,10 +106,9 @@ add_slash(I, Root) ->
     end.
 
 send_page(Type, Data, Req) ->
-    cowboy_req:reply(200, [{<<"Content-Type">>,
-			    list_to_binary(mime_type(Type))}],
+    MimeType = list_to_binary(mime_type(Type)),
+    cowboy_req:reply(200, #{<<"Content-Type">> => MimeType},
 		     Data, Req).
-
 
 path(Req) ->
     Path = cowboy_req:path(Req),
@@ -131,14 +121,23 @@ reply_html(Obj, Req, Env) ->
 %%----------------------------------------------------------------------
 %% other callbacks
 
-terminate(_Reason,_Req,_State) ->
+terminate(_Reason, _Req, #env{} = _State) ->
     %% ignore why we terminate
-    ok.
+    ok;
+terminate(Reason, Req, Pid) ->
+    websocket_terminate(Reason, Req, Pid).
 
 %%----------------------------------------------------------------------
 %% websocket stuff
 
-websocket_handle({text, Msg}, Req, Pid) ->
+websocket_init(ModStr) ->
+    Self = self(),
+    Mod = list_to_atom(ModStr),
+    %% Spawn an erlang handler
+    Pid = spawn_link(Mod, start, [Self]),
+    {ok, Pid}.
+
+websocket_handle({text, Msg}, Pid) ->
     %% This is a Json message from the browser
     case catch decode(Msg) of
 	{'EXIT', _Why} ->
@@ -149,16 +148,16 @@ websocket_handle({text, Msg}, Req, Pid) ->
 	Other ->
 	    Pid ! {invalidMessageNotStruct, Other}
     end,
-    {ok, Req, Pid}.
+    {ok, Pid}.
 
-websocket_info({send,Str}, Req, Pid) ->
-    {reply, {text, Str}, Req, Pid, hibernate};
-websocket_info([{cmd,_}|_]=L, Req, Pid) ->
+websocket_info({send,Str}, Pid) ->
+    {reply, {text, Str}, Pid, hibernate};
+websocket_info([{cmd,_}|_]=L, Pid) ->
     B = list_to_binary(encode([{struct,L}])),
-    {reply, {text, B}, Req, Pid, hibernate};
-websocket_info(Info, Req, Pid) ->
+    {reply, {text, B}, Pid, hibernate};
+websocket_info(Info, Pid) ->
     io:format("Handle_info Info:~p Pid:~p~n",[Info,Pid]),
-    {ok, Req, Pid, hibernate}.
+    {ok, Pid, hibernate}.
 
 websocket_terminate(_Reason, _Req, Pid) ->
     io:format("websocket.erl terminate:~n"),
