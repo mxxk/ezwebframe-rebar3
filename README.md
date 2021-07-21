@@ -21,8 +21,8 @@ Likewise buttons and controls in the browser, when pressed, send
 messages to Erlang.
 
 This system is built using websockets together with cowboy and is
-described in my book Programming Erlang (2'nd edition) (To be
-published in 2013).
+described in Joe Armstrong's book Programming Erlang (2'nd edition).
+
 
 NOTE
 ====
@@ -33,12 +33,20 @@ test this in all known browsers.
 INSTALLATION
 ============
 
-This program uses rebar to fetch and install the necessary dependencies.
-First you need to install rebar. If you don't have rebar then you can install
-a pre-build binary from https://github.com/rebar/rebar/wiki/rebar.
+This program uses rebar3 to fetch and install the necessary dependencies.
+First you need to install rebar3: https://github.com/erlang/rebar3
 
-To run the demos
+DEMOS
+=====
+
+To run the demos:
 
 <pre>
-   $ make
+$ make
 </pre>
+
+There is one directory per demo
+
+src/ezwebframe_demos/index.html - is an index
+src/ezwebframe_demos/js/        - common code
+src/ezwebframe_demos/XXX/       - demo XXX
