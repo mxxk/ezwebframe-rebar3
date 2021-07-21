@@ -135,7 +135,7 @@ websocket_init(ModStr) ->
     Mod = list_to_atom(ModStr),
     %% Spawn an erlang handler
     Pid = spawn_link(Mod, start, [Self]),
-    {ok, Pid}.
+    {[], Pid}.
 
 websocket_handle({text, Msg}, Pid) ->
     %% This is a Json message from the browser
@@ -148,16 +148,16 @@ websocket_handle({text, Msg}, Pid) ->
 	Other ->
 	    Pid ! {invalidMessageNotStruct, Other}
     end,
-    {ok, Pid}.
+    {[], Pid}.
 
 websocket_info({send,Str}, Pid) ->
-    {reply, {text, Str}, Pid, hibernate};
+    {[{text, Str}], Pid, hibernate};
 websocket_info([{cmd,_}|_]=L, Pid) ->
     B = list_to_binary(encode([{struct,L}])),
-    {reply, {text, B}, Pid, hibernate};
+    {[{text, B}], Pid, hibernate};
 websocket_info(Info, Pid) ->
     io:format("Handle_info Info:~p Pid:~p~n",[Info,Pid]),
-    {ok, Pid, hibernate}.
+    {[], Pid, hibernate}.
 
 websocket_terminate(_Reason, _Req, Pid) ->
     io:format("websocket.erl terminate:~n"),
