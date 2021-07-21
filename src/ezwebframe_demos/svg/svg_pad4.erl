@@ -1,5 +1,5 @@
 -module(svg_pad4).
--compile(export_all).
+-export([start/1]).
 
 start(Ws) ->
     process_flag(trap_exit, true),
@@ -60,7 +60,7 @@ start(Ws) ->
 
 add_generic_objects(Ws) ->
     Scale = 0.03,
-    Y=230,
+    _Y=230,
     make_generic_object(Ws, rect,
 			[{x,50},{y,50},{rx,5},{ry,5},
 			 {parent,svg},
@@ -200,10 +200,10 @@ new_index() ->
     put(free, N+1),
     N.
 
-enc(L) ->
-    L1 = [{struct,J} || J <- L],
-    C = ezwebframe_mochijson2:encode(L),
-    list_to_binary(C).
+% enc(L) ->
+%     L1 = [{struct,J} || J <- L],
+%     C = ezwebframe_mochijson2:encode(L),
+%     list_to_binary(C).
 
 transform(X, Y, Scale) ->
     {transform,f2b("translate(~p,~p) scale(~p,~p)", [X,Y,Scale,-Scale])}.
@@ -215,7 +215,7 @@ text(Ws, X, Y, Str) ->
 
 random_rect(Ws) ->
     {X0,Y0,Width,Ht} = rect_container(),
-    Id = new_index(),
+    _Id = new_index(),
     X = X0 + pos_ran(Width),
     Y = Y0 + pos_ran(Ht),
     W = pos_ran(Width+X0-X) - 5,
@@ -236,12 +236,12 @@ random_rect(Ws) ->
 pos_ran(N) when N =< 0 ->
     1;
 pos_ran(N) ->
-    random:uniform(N).
+    rand:uniform(N).
 
 ran_color() ->
-    B1 = unsigned_byte_to_hex_string(random:uniform(255)),
-    B2 = unsigned_byte_to_hex_string(random:uniform(255)),
-    B3 = unsigned_byte_to_hex_string(random:uniform(255)),
+    B1 = unsigned_byte_to_hex_string(rand:uniform(255)),
+    B2 = unsigned_byte_to_hex_string(rand:uniform(255)),
+    B3 = unsigned_byte_to_hex_string(rand:uniform(255)),
     list_to_binary([$#,B1,B2,B3]).
 
 wow() ->
