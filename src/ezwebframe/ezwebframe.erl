@@ -162,8 +162,8 @@ websocket_info(Info, Pid) ->
     io:format("Handle_info Info:~p Pid:~p~n",[Info,Pid]),
     {[], Pid, hibernate}.
 
-websocket_terminate(_Reason, _Req, Pid) ->
-    io:format("websocket.erl terminate:~n"),
+websocket_terminate(Reason, _Req, Pid) ->
+    io:format("websocket.erl terminate: ~p~n", [Reason]),
     exit(Pid, socketClosed),
     ok.
 
