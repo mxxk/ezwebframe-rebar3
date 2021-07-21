@@ -1,6 +1,12 @@
 ezwebframe
 ==========
 
+Note: This repository adapts the original code at
+https://github.com/joearms/ezwebframe to build with Rebar3 and Cowboy 2.9.0.
+
+SUMMARY
+=======
+
 Pronounced "Easy web frame."
 
 Ezwebframe attempts to make web programming just a little bit easier.
