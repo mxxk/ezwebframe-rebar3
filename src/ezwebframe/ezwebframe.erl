@@ -12,6 +12,9 @@
 
 -import(ezwebframe_mochijson2, [encode/1, decode/1]).
 
+% For compatibility with OTP 23 and higher
+-compile({no_auto_import, [binary_to_atom/1]}).
+
 %% env has only one parameter - reserved for future expansion
 
 -record(env, {dispatch}).
@@ -164,6 +167,7 @@ websocket_terminate(_Reason, _Req, Pid) ->
     exit(Pid, socketClosed),
     ok.
 
+% For compatibility with OTP 22 and earlier
 binary_to_atom(B) ->
     list_to_atom(binary_to_list(B)).
 
