@@ -2,7 +2,6 @@
 -export([start/1]).
 
 start(Ws) ->
-    process_flag(trap_exit, true),
     put(free, 1),
 
     %% INIT MUST be the first command
